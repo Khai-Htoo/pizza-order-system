@@ -1,5 +1,4 @@
 <?php
-
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
@@ -7,7 +6,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserListController;
-use App\Http\Controllers\user\AjaxController;
+use App\Http\Controllers\User\AjaxController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,32 +20,32 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
  */
+
 // login register
 Route::middleware(['admin_auth'])->group(function () {
     Route::redirect('/', 'loginPage');
     Route::get('loginPage', [AuthController::class, 'loginPage'])->name('auth#loginPage');
     Route::get('registerPage', [AuthController::class, 'registerPage'])->name('auth#registerPage');
-
 });
 
 Route::middleware(['auth'])->group(function () {
-// dashboard
+    // dashboard
     Route::get('dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
 
     Route::middleware(['admin_auth'])->group(function () {
-// category
+        // category
         Route::group(['prefix' => 'category'], function () {
-            Route::get('list', [CategoryController::class, 'list'])->name('category#list');
+             Route::get('list', [CategoryController::class, 'list'])->name('category#list');
             Route::get('create/page', [CategoryController::class, 'createPage'])->name('category#createPage');
             Route::post('create', [CategoryController::class, 'create'])->name('category#create');
             Route::get('delete/{id}', [CategoryController::class, 'delete'])->name('category#delete');
             Route::get('edit/{id}', [CategoryController::class, 'edit'])->name('category#edit');
             Route::post('update', [CategoryController::class, 'update'])->name('category#update');
-
         });
-// admin account
+
+        // admin account
         Route::prefix('admin')->group(function () {
-            // password
+              // password
             Route::get('password/changePage', [AdminController::class, 'changePasswordPage'])->name('admin#changePasswordPage');
             Route::post('changePassword', [AdminController::class, 'changePassword'])->name('admin#changePassword');
             // profile
@@ -61,15 +60,15 @@ Route::middleware(['auth'])->group(function () {
             Route::get('changeStatus', [adminController::class, 'changeStatus'])->name('admin#ajaxChangeStatus');
 
         });
-// user list
+
+        // user list
         Route::prefix('userList')->group(function () {
-            Route::get('list', [UserListController::class, 'list'])->name('userList#list');
+           Route::get('list', [UserListController::class, 'list'])->name('userList#list');
             Route::get('delete/{id}', [AdminController::class, 'delete'])->name('userlist#delete');
             Route::get('changeStatus', [adminController::class, 'changeUserStatus'])->name('admin#ajaxChangeStatus');
-
         });
 
-// product
+        // product
         Route::prefix('products')->group(function () {
             Route::get('list', [ProductController::class, 'list'])->name('product#list');
             Route::get('createPage', [ProductController::class, 'createPage'])->name('product#createPage');
@@ -78,9 +77,9 @@ Route::middleware(['auth'])->group(function () {
             Route::get('edit/{id}', [ProductController::class, 'edit'])->name('product#edit');
             Route::get('updatePage/{id}', [ProductController::class, 'updatePage'])->name('product#updatePage');
             Route::post('update', [ProductController::class, 'update'])->name('product#update');
-
         });
-// order
+
+        // order
         Route::prefix('order')->group(function () {
             route::get('order', [OrderController::class, 'order'])->name('admin#orderList');
             route::get('status', [OrderController::class, 'status'])->name('admin#getStatus');
@@ -88,13 +87,13 @@ Route::middleware(['auth'])->group(function () {
             Route::get('orderList/{orderCode}', [OrderController::class, 'orderList'])->name('admin#orderShow');
 
         });
-// get contactMsg
+
+        // get contactMsg
         Route::get('get', [ContactController::class, 'get'])->name('admin#getContact');
         Route::get('deleteSent/{id}', [ContactController::class, 'deleteSent'])->name('admin#deleteSent');
-
     });
 
-// user home
+    // user home
     Route::group(['prefix' => 'user', 'middleware' => 'user_auth'], function () {
         Route::get('homePage', [UserController::class, 'home'])->name('user#home');
         Route::get('filter/{id}', [UserController::class, 'filter'])->name('user#filter');
